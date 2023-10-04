@@ -43,7 +43,7 @@ public class EmployeeRepository implements Repository<Employee> {
     @Override
     public void save(Employee employee) throws SQLException {
         String sql;
-        if (employee.getId() == null) {
+        if (employee.getId() == null || employee.getId() <= 0) {
             sql = "INSERT INTO employees (first_name, pa_surname, ma_surname, email, salary) VALUES (?,?,?,?,?)";
         } else {
             sql = "UPDATE employees SET first_name=?, pa_surname=?, ma_surname=?, email=?, salary=? WHERE id=?";
@@ -55,7 +55,7 @@ public class EmployeeRepository implements Repository<Employee> {
             myStamt.setString(3, employee.getMa_surname());
             myStamt.setString(4, employee.getEmail());
             myStamt.setFloat(5, employee.getSalary());
-            if (employee.getId() != null) {
+            if (employee.getId() != null && employee.getId() > 0) {
                 myStamt.setInt(6, employee.getId());
             }
 
@@ -64,8 +64,11 @@ public class EmployeeRepository implements Repository<Employee> {
     }
 
     @Override
-    public void delete(Integer id) {
-
+    public void delete(Integer id) throws SQLException {
+        try(PreparedStatement myStamt = getConnection().prepareStatement("DELETE FROM employees WHERE id=?")) {
+            myStamt.setInt(1, id);
+            myStamt.executeUpdate();
+        }
     }
 
     private Employee createEmployee(ResultSet myRes) throws SQLException {

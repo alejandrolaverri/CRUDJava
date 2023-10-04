@@ -15,7 +15,7 @@ public class Main {
         try (Connection myConn = DatabaseConnection.getInstance()) {
              Repository<Employee> repository = new EmployeeRepository();
 
-            System.out.println("---Listando antes de insertar---");
+            System.out.println("---Listando---");
             repository.findAll().forEach(System.out::println);
 
             System.out.println("---Insertamos un empleado---");
@@ -28,7 +28,21 @@ public class Main {
             repository.save(employee);
             System.out.println(employee);
 
-            System.out.println("---Listando despues de insertar---");
+            System.out.println("---Actualizando un empleado---");
+            Employee employee2 = new Employee();
+            employee2.setId(3);
+            employee2.setFirst_name("Michael");
+            employee2.setPa_surname("Johnson");
+            employee2.setMa_surname("Browny");
+            employee2.setEmail("emily.browny@example.com");
+            employee2.setSalary((float)55000);
+            repository.save(employee2);
+            System.out.println(employee2);
+
+            System.out.println("---Empleado elminado---");
+            repository.delete(18);
+
+            System.out.println("---Listando---");
             repository.findAll().forEach(System.out::println);
         }
     }
